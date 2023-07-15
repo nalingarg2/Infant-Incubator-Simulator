@@ -3,6 +3,7 @@ import matplotlib.animation as animation
 import time
 import math
 import socket
+import os
 
 class SimpleNetworkClient :
     def __init__(self, port1, port2) :
@@ -46,14 +47,14 @@ class SimpleNetworkClient :
 
     def authenticate(self, p, pw) :
         s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-        s.sendto(b"AUTH %s" % pw, ("127.0.0.1", p))
+        s.sendto(b"AUTH %s" % pw.encode('utf-8'), ("127.0.0.1", p))
         msg, addr = s.recvfrom(1024)
         return msg.strip()
 
     def updateInfTemp(self, frame) :
         self.updateTime()
         if self.infToken is None : #not yet authenticated
-            self.infToken = self.authenticate(self.infPort, b"!Q#E%T&U8i6y4r2w")
+            self.infToken = self.authenticate(self.infPort, os.environ['AUTH_PW'])
 
         self.infTemps.append(self.getTemperatureFromPort(self.infPort, self.infToken)-273)
         #self.infTemps.append(self.infTemps[-1] + 1)
@@ -64,7 +65,7 @@ class SimpleNetworkClient :
     def updateIncTemp(self, frame) :
         self.updateTime()
         if self.incToken is None : #not yet authenticated
-            self.incToken = self.authenticate(self.incPort, b"!Q#E%T&U8i6y4r2w")
+            self.incToken = self.authenticate(self.incPort, os.environ['AUTH_PW'])
 
         self.incTemps.append(self.getTemperatureFromPort(self.incPort, self.incToken)-273)
         #self.incTemps.append(self.incTemps[-1] + 1)
