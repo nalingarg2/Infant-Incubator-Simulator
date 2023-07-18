@@ -54,12 +54,16 @@ class SmartNetworkThermometer (threading.Thread) :
 
     def processCommands(self, msg, addr) :
         cmds = msg.split(';')
+        # print(cmds)
         for c in cmds :
             cs = c.split(' ')
+            # print(len(cs))
             if len(cs) == 2 : #should be either AUTH or LOGOUT
                 if cs[0] == "AUTH":
-                    if cs[1] == "!Q#E%T&U8i6y4r2w" :
+                    # Prevent token list growth when password is constant
+                    if cs[1] == "!Q#E%T&U8i6y4r2w" and len(self.tokens) == 0:
                         self.tokens.append(''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(16)))
+                        # print(self.tokens)
                         self.serverSocket.sendto(self.tokens[-1].encode("utf-8"), addr)
                         #print (self.tokens[-1])
                 elif cs[0] == "LOGOUT":
@@ -90,7 +94,7 @@ class SmartNetworkThermometer (threading.Thread) :
                 if len(cmds) == 1 : # protected commands case
                     semi = msg.find(';')
                     if semi != -1 : #if we found the semicolon
-                        #print (msg)
+                        # print(msg)
                         if msg[:semi] in self.tokens : #if its a valid token
                             self.processCommands(msg[semi+1:], addr)
                         else :
@@ -191,6 +195,10 @@ sim = infinc.Simulator(infant = bob, incubator = inc, roomTemp = 20 + 273, timeS
 sim.start()
 
 sc = SimpleClient(bobThermo, incThermo)
+
+print("************TEST ONLY*****************")
+bobThermo.processCommands("AUTH !Q#E%T&U8i6y4r2w", ("127.0.0.1", 23458))
+bobThermo.processCommands("AUTH !Q#E%T&U8i6y4r2w", ("127.0.0.1", 23458))
 
 plt.grid()
 plt.show()
