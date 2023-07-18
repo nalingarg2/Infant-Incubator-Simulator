@@ -196,9 +196,9 @@ sim.start()
 
 sc = SimpleClient(bobThermo, incThermo)
 
-print("************TEST ONLY*****************")
-bobThermo.processCommands("AUTH !Q#E%T&U8i6y4r2w", ("127.0.0.1", 23458))
-bobThermo.processCommands("AUTH !Q#E%T&U8i6y4r2w", ("127.0.0.1", 23458))
+# print("************TEST ONLY*****************")
+# bobThermo.processCommands("AUTH !Q#E%T&U8i6y4r2w", ("127.0.0.1", 23458))
+# bobThermo.processCommands("AUTH !Q#E%T&U8i6y4r2w", ("127.0.0.1", 23458))
 
 plt.grid()
 plt.show()
